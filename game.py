@@ -82,8 +82,8 @@ class spieltag(object):
     def print_and_calc_tabelle(self):
         tabelle = []
         for spiel in self.spiele:
-            spiel.heim.tore = spiel.heim.tore + spiel.heim_tore
-            spiel.gast.tore = spiel.gast.tore + spiel.gast_tore
+            spiel.heim.tore = spiel.heim.tore + spiel.heim_tore - spiel.gast_tore
+            spiel.gast.tore = spiel.gast.tore + spiel.gast_tore - spiel.heim_tore
             heim_punkte = gast_punkte = 0
             if spiel.heim_tore == spiel.gast_tore:
                 heim_punkte = gast_punkte = 1
@@ -117,7 +117,7 @@ class spieltag(object):
 class spiel(object):
     def __init__(self, heim, gast):
         print("Partie: %s, %s" % (heim.name, gast.name))  # TODO: alt use __str__ on
-                                                             # mannschaft
+                                                          # mannschaft
         self.heim = heim
         self.heim_tore = 0
         self.gast = gast
