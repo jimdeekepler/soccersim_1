@@ -45,30 +45,41 @@ class mannschaft(object):
 class spielplan(object):
     def __init__(self, mannschaften):
         self.mannschaften = mannschaften
-        ## self.anzSpieltage = int(len(mannschaften) / 2)
-        anzSpieltage = int(len(mannschaften) / 2)
+        anzSpieltage = len(mannschaften) - 1
 
         print("bereite %d Spieltage vor" % anzSpieltage)
-        heim_mannschaften = mannschaften[0:anzSpieltage]
-        gast_mannschaften = mannschaften[anzSpieltage:]
         self.items = []
-        for i in range(anzSpieltage):
-            st = spieltag(heim_mannschaften, gast_mannschaften)
+        for spieltag_no in range(1, anzSpieltage):
+            st = spieltag(spieltag_no, mannschaften)
             self.items.append(st)
-            team = gast_mannschaften.pop(0)
-            gast_mannschaften.append(team)
 
 
 class spieltag(object):
-    def __init__(self, heim_mannschaften, gast_mannschaften):
-        print("len a: %d  len b: %d" % (len(heim_mannschaften), len(gast_mannschaften)))
-        assert len(heim_mannschaften) == len(gast_mannschaften)
+    def __init__(self, spieltag_no, mannschaften):
+        print("bereite Spieltag %d vor" % (spieltag_no, ))
         self.spiele = []
-        # print(median)
-        # print(heimmannschaften)
-        # print(gastmannschaften)
-        for pos in range(len(heim_mannschaften)):
-            sp = spiel(heim_mannschaften[pos], gast_mannschaften[pos])
+
+        modul = len(mannschaften) - 1
+        anz_partien = int(len(mannschaften) / 2) + 1
+
+        for pos in range(1, anz_partien):
+            # k = pos
+            # (k + l) % modul == i
+            # l = i * modul - k
+            l = (-(pos - spieltag_no) % modul)
+            if l <= 0:
+                l = modul - l
+            if l == pos:
+                l = modul + 1
+
+            # print("pos, l, spieltag, (pos+l), modul, (pos+l)%modul")
+            # print(pos, l, spieltag_no, (pos+l), modul, (pos+l)%modul )
+            assert 0 < pos and pos <= modul
+            assert 0 < l and l <= modul + 1
+            # if (pos == l or (pos + l) % modul != spieltag_no):
+            #     l = modul + 1
+            
+            sp = spiel(mannschaften[pos - 1], mannschaften[l - 1])
 
             # TODO: maybe later?
             sp.spielen()
@@ -116,8 +127,6 @@ class spieltag(object):
 
 class spiel(object):
     def __init__(self, heim, gast):
-        print("Partie: %s, %s" % (heim.name, gast.name))  # TODO: alt use __str__ on
-                                                          # mannschaft
         self.heim = heim
         self.heim_tore = 0
         self.gast = gast
@@ -128,7 +137,7 @@ class spiel(object):
         self.gast_tore = random.randint(0,6)
 
     def __repr__(self):
-        return "%-20s : %-20s %2d : %2d" % (self.heim.name, self.gast.name,
+        return "%-28s : %-28s %2d : %2d" % (self.heim.name[:28], self.gast.name[:28],
                 self.heim_tore, self.gast_tore)
 
 
@@ -138,6 +147,7 @@ def main():
             "Türk Güći Ingolstadt", "SV Unterhaching",
             "Rot-Weiss Bad Arolsen", "Preussen Chemnitz",
             "Union Wenigerode", "Werder Langenhagen"]
+    random.shuffle(mannschafts_namen)
     mannschaften = []
     for name in mannschafts_namen:
         mannschaften.append(mannschaft(name))
