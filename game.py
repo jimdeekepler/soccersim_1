@@ -60,12 +60,14 @@ class spieltag(object):
         self.spiele = []
 
         modul = len(mannschaften) - 1
-        anz_partien = int(len(mannschaften) / 2) + 1
 
-        for pos in range(1, anz_partien):
+        teams = []
+        for pos in range(1, len(mannschaften)):
             # k = pos
             # (k + l) % modul == i
             # l = i * modul - k
+            if pos in teams:
+                continue
             l = (-(pos - spieltag_no) % modul)
             if l <= 0:
                 l = modul - l
@@ -76,6 +78,8 @@ class spieltag(object):
             # print(pos, l, spieltag_no, (pos+l), modul, (pos+l)%modul )
             assert 0 < pos and pos <= modul
             assert 0 < l and l <= modul + 1
+            teams.append(pos)
+            teams.append(l)
             # if (pos == l or (pos + l) % modul != spieltag_no):
             #     l = modul + 1
             
